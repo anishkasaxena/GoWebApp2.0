@@ -1,0 +1,28 @@
+name: Rollback Deployment
+
+on:
+  push:
+    branches:
+      - main  # Replace with your target branch
+
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Rollback Deployment
+        run: |
+          # Set up kubectl (you may need to configure kubeconfig as per your environment)
+          kubectl config set-context my-kube-context  # Replace with your Kubernetes context
+
+          # Get the previous revision
+          previous_revision=$(kubectl rollout history deployment/${{ vars.DEPLOYMENT }} -n ${{ vars.NAMESPACE }} | awk 'NR==2{print $1}')
+
+          # Perform the rollback
+          kubectl rollout undo deployment/${{ vars.DEPLOYMENT }} --to-revision=${previous_revision} -n ${{ vars.NAMESPACE }}
+
+          # Check the deployment status
+          kubectl rollout status deployment/${{ vars.DEPLOYMENT }} -n ${{ vars.NAMESPACE }}
