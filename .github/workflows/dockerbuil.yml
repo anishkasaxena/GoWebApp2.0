@@ -27,26 +27,12 @@ jobs:
           file: Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/golangwebapp:latest
-          
-      -
-        name: SonarQube Scan
-        uses: kitabisa/sonarqube-action@v1.2.0
-        with:
-          host: ${{ secrets.SONAR_HOST_URL }}
-          login: ${{ secrets.SONAR_TOKEN }}
-
-
-      - name: Send SonarQube analysis results to your existing cluster
-        run: |
-          # You can use the SonarScanner command or the SonarQube CLI to send results
-          # to your existing SonarQube cluster. Replace the placeholders with your
-          # SonarQube cluster's URL and authentication token.
-          sonar-scanner \
-          -Dsonar.host.url=http://localhost:9000 \
-          -Dsonar.login=sqp_0658e89346c7832936b408166f69489d2e48cc44
-
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      -    
+         name: sonar
+         uses: sonarsource/sonarqube-scan-action@master
+         env:
+           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
 
 
