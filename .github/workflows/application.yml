@@ -30,7 +30,7 @@ jobs:
           # Here, you can use kubectl commands to deploy your application to Minikube.
           # For example:
             kubectl apply -f gokubernetes.yaml
-            kubectl get deployement --all-namespaces
+            kubectl get deployment --all-namespaces
           # kubectl apply -f your-service.yaml -n your-namespace
 
       - name: Clean up
