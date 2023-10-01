@@ -1,0 +1,39 @@
+name: Deploy to Minikube
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Minikube
+        run: |
+          # Install Minikube
+          curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+          sudo install minikube-linux-amd64 /usr/local/bin/minikube
+
+          # Start Minikube cluster (adjust options as needed)
+          minikube start --driver=virtualbox --cpus=2 --memory=4096
+
+          # Configure kubectl to use Minikube context
+          kubectl config use-context minikube
+
+      - name: Deploy your application
+        run: |
+          # Here, you can use kubectl commands to deploy your application to Minikube.
+          # For example:
+            kubectl apply -f gokubernetes.yaml
+          # kubectl apply -f your-service.yaml -n your-namespace
+
+      - name: Clean up
+        run: |
+          # Optionally, you can clean up after the deployment.
+          # For example, delete the Minikube cluster.
+          minikube delete --all --purge
