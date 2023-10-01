@@ -1,4 +1,4 @@
-name: Deploy to Minikube
+name: Deploy to Minikube with Docker Driver
 
 on:
   push:
@@ -13,14 +13,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Minikube
+      - name: Set up Minikube with Docker Driver
         run: |
           # Install Minikube
           curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
           sudo install minikube-linux-amd64 /usr/local/bin/minikube
 
-          # Start Minikube cluster (adjust options as needed)
-          minikube start --driver=virtualbox --cpus=2 --memory=4096
+          # Start Minikube cluster with the Docker driver
+          minikube start --driver=docker --cpus=2 --memory=4096
 
           # Configure kubectl to use Minikube context
           kubectl config use-context minikube
