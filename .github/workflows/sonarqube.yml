@@ -1,27 +1,64 @@
-name: Build
+name: Build and SonarQube Analysis
 
 on:
   push:
     branches:
-      - main
-
+      - main  # Replace with the branch you want to trigger the workflow on
 
 jobs:
   build:
-    name: Build
     runs-on: ubuntu-latest
-    permissions: read-all
+
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - uses: sonarsource/sonarqube-scan-action@master
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-      # If you wish to fail your job when the Quality Gate is red, uncomment the
-      # following lines. This would typically be used to fail a deployment.
-      # - uses: sonarsource/sonarqube-quality-gate-action@master
-      #   timeout-minutes: 5
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Docker
+      uses: docker/setup-action@v2
+      with:
+        dockerfile: Dockerfile  # Path to your Dockerfile
+
+    - name: Build Docker image
+      run: docker build -t my-docker-image .
+
+    - name: Log in to Docker Hub (if needed)
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: |
+        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+
+    - name: Push Docker image
+      run: docker push my-docker-image  # Replace with your image name and tag
+
+  sonarqube:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up SonarQube
+      uses: SonarSource/sonarqube-scan-action@v1
+      with:
+        token: ${{ secrets.SONARQUBE_TOKEN }}
+        projectKey: GoWeb-App
+        projectName: GoWebApp2.0
+        # organization: your_organization  # If applicable
+        scannerVersion: latest
+
+    - name: Run SonarQube analysis
+      run: sonar-scanner  # Make sure SonarScanner is available in your Docker image
+
+    - name: Upload SonarQube results
+      uses: actions/upload-artifact@v2
+      with:
+        name: sonarqube-report
+        path: .scannerwork
+
+    - name: Complete SonarQube analysis
+      uses: SonarSource/sonarqube-scan-action@v1
+      with:
+        token: ${{ secrets.SONARQUBE_TOKEN }}
+        scannerVersion: latest
+        waitForQualityGate: 'true'
