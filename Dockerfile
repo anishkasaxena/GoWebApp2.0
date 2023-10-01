@@ -8,7 +8,7 @@ COPY sonar-project.properties /app
 
 WORKDIR /app
 
-RUN sonar-scanner -Dsonar.projectKey=your_project_key -Dsonar.sources=.
+RUN sonar-scanner -Dsonar.projectKey=GoWeb-App -Dsonar.sources=.
 
 RUN go build -o main .
 
