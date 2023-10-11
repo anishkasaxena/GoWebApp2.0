@@ -22,7 +22,13 @@ jobs:
           previous_revision=$(kubectl rollout history deployment/${{ vars.DEPLOYMENT }} -n ${{ vars.NAMESPACE }} | awk 'NR==2{print $1}')
 
           # Perform the rollback
-          kubectl rollout undo deployment/${{ vars.DEPLOYMENT }} --to-revision=${previous_revision} -n ${{ vars.NAMESPACE }}
+          kubectl rollout status deployment/${{ vars.DEPLOYMENT }} --to-revision=${previous_revision} -n ${{ vars.NAMESPACE }}
 
           # Check the deployment status
           kubectl rollout status deployment/${{ vars.DEPLOYMENT }} -n ${{ vars.NAMESPACE }}
+
+      - name: Notify
+        uses: act10ns/slack@v2
+        with: 
+          status: ${{ job.status }}
+        if: always()
