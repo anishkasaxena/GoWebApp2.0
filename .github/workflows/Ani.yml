@@ -1,0 +1,13 @@
+name: Test Anishka
+on:
+  push:
+    branches:
+      - my-branch
+jobs:
+  fetch-packages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch package
+        run: |
+          echo "::set-output name=packages::Anishka"
+
