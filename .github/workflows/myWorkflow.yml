@@ -1,0 +1,17 @@
+name: My Workflow
+on:
+  push:
+    branches:
+      - my-branch
+
+jobs:
+  my-job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run some commands
+        run: |
+          # Add your workflow steps here
