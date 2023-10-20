@@ -2,7 +2,7 @@ name: My Workflow
 on:
   push:
     branches:
-      - my-branch
+      - Anishka-new
 
 jobs:
   my-job:
