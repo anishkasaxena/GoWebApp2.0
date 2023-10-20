@@ -1,6 +1,8 @@
 name: Test cleanup
 on:
-    workflow_dispatch:
+  push:
+    branches:
+      - my-branch
 jobs:
   fetch-packages:
     runs-on: ubuntu-latest
