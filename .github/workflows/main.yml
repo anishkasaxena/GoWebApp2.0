@@ -12,7 +12,7 @@ jobs:
         - name: Fetch package
           id: step1
           run: |
-            result=$(curl -s -H "Authorization: token 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" \
+            result=$(curl -s -H "Authorization: token " \
             "https://api.github.com/orgs/5ire-tech/packages?package_type=container" \
             | jjq -r '[.[] | select(.name) | .name] | join(", ")') 
             echo "$result" >>"$GITHUB_OUTPUT"
