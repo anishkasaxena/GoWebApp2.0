@@ -3,17 +3,4 @@ on:
     push:
       branches:
         - main
-jobs:
-  fetch-packages:
-    runs-on: ubuntu-latest
-    outputs:
-      output: ${{steps.step1.outputs.result}}
-    steps:        
-        - name: Fetch package
-          id: step1
-          run: |
-            result=$(curl -s -H "Authorization: token " \
-            "https://api.github.com/orgs/5ire-tech/packages?package_type=container" \
-            | jjq -r '[.[] | select(.name) | .name] | join(", ")') 
-            echo "$result" >>"$GITHUB_OUTPUT"
-            
+
